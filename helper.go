@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"regexp"
 	"strconv"
 	"sync"
 )
@@ -37,6 +38,7 @@ func init() {
 	RegisterHelper("ifGt", ifGtHelper)
 	RegisterHelper("ifLt", ifLtHelper)
 	RegisterHelper("ifEq", ifEqHelper)
+	RegisterHelper("ifMatchesRegexStr", ifMatchesRegexStr)
 }
 
 // RegisterHelper registers a global helper. That helper will be available to all templates.
@@ -364,6 +366,24 @@ func ifEqHelper(a, b interface{}, options *Options) interface{} {
 		return options.Fn()
 	}
 	// Evaluate possible else condition.
+	return options.Inverse()
+}
+
+// ifMatchesRegexStr is helper function which does a regex match, where a is the expression to compile and
+// b is the string to match against.
+func ifMatchesRegexStr(a, b interface{}, options *Options) interface{} {
+	exp := Str(a)
+	match := Str(b)
+
+	re, err := regexp.Compile(exp)
+	if err != nil {
+		// TODO: log this.
+		return options.Inverse()
+	}
+
+	if re.MatchString(match) {
+		return options.Fn()
+	}
 	return options.Inverse()
 }
 

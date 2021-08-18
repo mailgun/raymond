@@ -3,7 +3,6 @@ package raymond
 import (
 	"errors"
 	"fmt"
-	"log"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -314,11 +313,11 @@ func ifGtHelper(a, b interface{}, options *Options) interface{} {
 	var err error
 
 	if aFloat, err = floatValue(a); err != nil {
-		// TODO: Log conversion failure.
+		log.WithError(err).Errorf("failed to convert value to float '%v'", a)
 		return options.Inverse()
 	}
 	if bFloat, err = floatValue(b); err != nil {
-		// TODO: Log conversion failure
+		log.WithError(err).Errorf("failed to convert value to float '%v'", b)
 		return options.Inverse()
 	}
 
@@ -334,11 +333,11 @@ func ifLtHelper(a, b interface{}, options *Options) interface{} {
 	var err error
 
 	if aFloat, err = floatValue(a); err != nil {
-		// TODO: Log conversion failure.
+		log.WithError(err).Errorf("failed to convert value to float '%v'", a)
 		return options.Inverse()
 	}
 	if bFloat, err = floatValue(b); err != nil {
-		// TODO: Log conversion failure
+		log.WithError(err).Errorf("failed to convert value to float '%v'", b)
 		return options.Inverse()
 	}
 
@@ -354,11 +353,11 @@ func ifEqHelper(a, b interface{}, options *Options) interface{} {
 	var err error
 
 	if aFloat, err = floatValue(a); err != nil {
-		// TODO: Log conversion failure.
+		log.WithError(err).Errorf("failed to convert value to float '%v'", a)
 		return options.Inverse()
 	}
 	if bFloat, err = floatValue(b); err != nil {
-		// TODO: Log conversion failure
+		log.WithError(err).Errorf("failed to convert value to float '%v'", b)
 		return options.Inverse()
 	}
 
@@ -377,7 +376,7 @@ func ifMatchesRegexStr(a, b interface{}, options *Options) interface{} {
 
 	re, err := regexp.Compile(exp)
 	if err != nil {
-		// TODO: log this.
+		log.WithError(err).Errorf("failed to compile regex '%v'", a)
 		return options.Inverse()
 	}
 

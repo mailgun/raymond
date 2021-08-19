@@ -504,3 +504,20 @@ func floatValue(value interface{}) (result float64, err error) {
 	}
 	return
 }
+
+// lengthParamHelper is a helper func to return the length of the value passed. It
+// will only return the length if the value  is an array, slice, map, or string. Otherwise,
+// it returns zero value.
+// e.g. foo == "foo" -> foo.length -> 3
+func lengthParamHelper(ctx reflect.Value) reflect.Value {
+	if ctx == zero {
+		return ctx
+	}
+
+	switch ctx.Kind() {
+	case reflect.Array, reflect.Slice, reflect.Map, reflect.String:
+		return reflect.ValueOf(ctx.Len())
+
+	}
+	return zero
+}

@@ -10,6 +10,8 @@ import (
 	"github.com/mailgun/raymond/v2/ast"
 )
 
+const lengthHelper = "length"
+
 var (
 	// @note borrowed from https://github.com/golang/go/tree/master/src/text/template/exec.go
 	errorType       = reflect.TypeOf((*error)(nil)).Elem()
@@ -340,6 +342,12 @@ func (v *evalVisitor) evalField(ctx reflect.Value, fieldName string, exprRoot bo
 				result = ctx.Index(i)
 			}
 		}
+	}
+	// TODO: Perhaps we should have a register of param helpers. Similar to the base helpers.
+	// If the result is zero but the field name is 'length', then attempt to perform
+	// len operator on the value. This is to support mutations to user params such as 'foo.length'.
+	if result == zero && fieldName == lengthHelper {
+		result = lengthParamHelper(ctx)
 	}
 
 	// check if result is a function

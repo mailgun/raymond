@@ -1,6 +1,12 @@
 package raymond
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
 
 const (
 	VERBOSE = false
@@ -597,4 +603,20 @@ func TestHelperCtx(t *testing.T) {
 	if result != "By namefile - Alan Johnson" {
 		t.Errorf("Failed to render template in helper: %q", result)
 	}
+}
+
+func TestRegisterParamHelper(t *testing.T) {
+	pHelper := func(v reflect.Value) reflect.Value { return v }
+	RegisterParamHelper("test", pHelper)
+
+	gotFunc := findParamHelper("test")
+	require.NotNil(t, gotFunc)
+
+	value := reflect.ValueOf("rick")
+	got := gotFunc(value)
+	assert.Equal(t, value.String(), got.String())
+
+	RemoveParamHelper("test")
+	gotFunc = findParamHelper("test")
+	assert.Nil(t, gotFunc)
 }

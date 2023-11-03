@@ -617,7 +617,7 @@ func (v *evalVisitor) callFunc(name string, funcVal reflect.Value, options *Opti
 	}
 
 	// check and collect arguments
-	args := make([]reflect.Value, numIn+vaCount)
+	args := make([]reflect.Value, 0, numIn+vaCount)
 	for i, param := range params {
 		arg := reflect.ValueOf(param)
 		var argType reflect.Type
@@ -652,11 +652,11 @@ func (v *evalVisitor) callFunc(name string, funcVal reflect.Value, options *Opti
 			}
 		}
 
-		args[i] = arg
+		args = append(args, arg)
 	}
 
 	if addOptions {
-		args[numIn+vaCount-1] = reflect.ValueOf(options)
+		args = append(args, reflect.ValueOf(options))
 	}
 
 	result := funcVal.Call(args)

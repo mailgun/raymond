@@ -94,10 +94,16 @@ func detectDataHelper(options *raymond.Options) string {
 	return ""
 }
 
-//
+func variadicHelper(a string, b ...bool) string {
+	if len(b) > 0 && b[0] {
+		return "TRUE " + a
+	}
+	return "FALSE " + a
+}
+
 // Those tests come from:
-//   https://github.com/wycats/handlebars.js/blob/master/spec/helper.js
 //
+//	https://github.com/wycats/handlebars.js/blob/master/spec/helper.js
 var helpersTests = []Test{
 	{
 		"helper with complex lookup",
@@ -656,7 +662,26 @@ var helpersTests = []Test{
 		nil,
 		"GOODBYE cruel WORLD goodbye",
 	},
-
+	{"variadic helper",
+		`{{ variadicHelper "foo" true}}`,
+		map[string]string{},
+		nil,
+		map[string]interface{}{
+			"variadicHelper": variadicHelper,
+		},
+		nil,
+		"TRUE foo",
+	},
+	{"variadic helper without args",
+		`{{ variadicHelper "foo"}}`,
+		map[string]string{},
+		nil,
+		map[string]interface{}{
+			"variadicHelper": variadicHelper,
+		},
+		nil,
+		"FALSE foo",
+	},
 	// @todo "block params" tests
 }
 

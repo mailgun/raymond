@@ -495,7 +495,8 @@ func equalHelper(a interface{}, b interface{}, options *Options) interface{} {
 		return options.Fn()
 	}
 
-	return ""
+	// Evaluate possible else condition.
+	return options.Inverse()
 }
 
 // floatValue attempts to convert value into a float64 and returns an error if it fails.
